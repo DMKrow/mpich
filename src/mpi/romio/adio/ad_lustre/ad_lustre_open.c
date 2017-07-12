@@ -162,11 +162,15 @@ void ADIOI_LUSTRE_Open(ADIO_File fd, int *error_code)
 	}
     }
 
+#ifdef LL_ADVISE_ON
     if(fd->hints->fs_hints.lustre.lock_ahead_read ||
        fd->hints->fs_hints.lustre.lock_ahead_write) {
 	    ADIOI_LUSTRE_clear_locks(fd);
 	    ADIOI_LUSTRE_request_only_lock_ioctl(fd);
     }
+
+#endif 
+
 
 fn_exit:
     ADIOI_Free(lum);

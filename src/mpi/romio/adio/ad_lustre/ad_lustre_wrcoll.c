@@ -11,6 +11,8 @@
 #include "ad_lustre.h"
 #include "adio_extern.h"
 
+
+#ifdef LL_ADVISE_ON
 /* in ad_lustre_lock.c */
 void ADIOI_LUSTRE_lock_ahead_ioctl(ADIO_File fd,
                                    int avail_cb_nodes,
@@ -27,6 +29,11 @@ if(fd->hints->fs_hints.lustre.lock_ahead_write) {                           \
         ADIOI_LUSTRE_lock_ahead_ioctl(fd, cb_nodes, offset, error_code);    \
     }                                                                       \
 }
+#else 
+#define ADIOI_LUSTRE_WR_LOCK_AHEAD(fd,cb_nodes,offset,error_code) 
+
+#endif
+
 
 /* prototypes of functions used for collective writes only. */
 static void ADIOI_LUSTRE_Exch_and_write(ADIO_File fd, const void *buf,
@@ -47,6 +54,7 @@ static void ADIOI_LUSTRE_Fill_send_buffer(ADIO_File fd, const void *buf,
 					  MPI_Request *requests,
 					  int *sent_to_proc, int nprocs,
 					  int myrank, int contig_access_count,
+
 					  int *striping_info,
 					  ADIO_Offset *send_buf_idx,
                                           int *curr_to_proc,
